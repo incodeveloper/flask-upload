@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Upload</title>
+    <style>
+        #result {
+            color:red;
+            font-size: 12px;
+            margin-top:10px;
+            display:none;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <input type="file" name="image" id="image" />
+        <div id="result"></div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function(){
+            let image = $('#image');
+
+            image.on("change", function(){
+                let img = image[0];
+                let formData = new FormData();
+                formData.append('image', img.files[0]);
+
+                $.ajax({
+                    type :'POST',
+                    dataType: 'json',
+                    url: "{{ url_for('upload') }}",
+                    data: formData,
+                    cache:false,
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function(){
+                        $('#result').html('Uploading..').stop().fadeIn();
+                    },
+                    success: function(response){
+                        if ( response.status === 'ok' ) {
+                            $('#result').html('Upload Success').stop().fadeIn();
+                        } else {
+                            $('#result').html('Upload Failed').stop().fadeIn();
+                        }
+                    },
+                });
+            });
+
+
+        });
+    </script>
+</body>
+</html>
